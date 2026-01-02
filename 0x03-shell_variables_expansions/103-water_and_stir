@@ -1,18 +1,2 @@
 #!/bin/bash
-
-to_dec() {
-  n="$1"
-  base="$2"
-  d=0
-  l=${#base}
-  for ((i=0;i<${#n};i++))
-  do
-    c="${n:$i:1}"
-    idx=$(expr index "$base" "$c")
-    d=$((d*l + idx - 1))
-  done
-  echo $d
-}
-
-SUM=$(( $(to_dec "$WATER" "water") + $(to_dec "$STIR" "stir") ))
-echo "${BESTCHOL:$((SUM % ${#BESTCHOL})):1}"
+printf "%o\n" $(( $((5#$(echo $WATER | tr water 01234))) + $((5#$(echo $STIR | tr stir. 01234))) )) | tr 01234567 bestchol

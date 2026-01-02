@@ -14,23 +14,5 @@ to_dec() {
   echo $d
 }
 
-from_dec() {
-  n=$1
-  base="$2"
-  r=""
-  l=${#base}
-  if [ "$n" -eq 0 ]
-  then
-    echo "${base:0:1}"
-    return
-  fi
-  while [ "$n" -gt 0 ]
-  do
-    rem=$(( n % l ))
-    r="${base:rem:1}$r"
-    n=$(( n / l ))
-  done
-  echo "$r"
-}
-
-from_dec $(( $(to_dec "$WATER" "water") + $(to_dec "$STIR" "stir") )) "bestchol"
+SUM=$(( $(to_dec "$WATER" "water") + $(to_dec "$STIR" "stir") ))
+echo "${BESTCHOL:$((SUM % ${#BESTCHOL})):1}"

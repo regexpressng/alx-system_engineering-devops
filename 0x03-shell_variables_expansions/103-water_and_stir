@@ -1,2 +1,45 @@
 #!/bin/bash
-echo $(($WATER + $STIR))
+#!/bin/bash
+
+# Function: convert custom base string to decimal
+to_decimal() {
+    local number="$1"
+    local base="$2"
+    local len=${#number}
+    local base_len=${#base}
+    local dec=0
+
+    for (( i=0; i<$len; i++ )); do
+        char="${number:$i:1}"
+        # find index of char in base
+        index=$(expr index "$base" "$char")
+        dec=$(( dec*base_len + index - 1 ))
+    done
+    echo $dec
+}
+
+# Function: convert decimal to custom base
+from_decimal() {
+    local dec="$1"
+    local base="$2"
+    local base_len=${#base}
+    local result=""
+
+    if [ $dec -eq 0 ]; then
+        echo "${base:0:1}"
+        return
+    fi
+
+    while [ $dec -gt 0 ]; do
+        rem=$(( dec % base_len ))
+        result="${base:rem:1}$result"
+        dec=$(( dec / base_len ))
+    done
+    echo "$result"
+}
+
+# Read environment variables
+sum=$(( $(to_decimal "$WATER" "water") + $(to_decimal "$STIR" "stir") ))
+
+# Print in bestchol base
+from_decimal $sum "bestchol"

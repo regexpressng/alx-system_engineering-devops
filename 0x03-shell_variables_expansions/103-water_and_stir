@@ -1,2 +1,36 @@
 #!/bin/bash
-r="";n=$(( $(for((i=0;i<${#WATER};i++));do c="${WATER:$i:1}";echo $(( $(expr index "water" "$c") -1 ));done | awk '{s=s*5+$1}END{print s}') + $(for((i=0;i<${#STIR};i++));do c="${STIR:$i:1}";echo $(( $(expr index "stir" "$c") -1 ));done | awk '{s=s*4+$1}END{print s}') )); while [ $n -gt 0 ]; do r="${r}${BESTCHOL:$((n%${#BESTCHOL})):1}"; n=$(( n/${#BESTCHOL} )); done; echo $(echo $r | rev)
+
+to_dec() {
+  n="$1"
+  base="$2"
+  d=0
+  l=${#base}
+  for ((i=0;i<${#n};i++))
+  do
+    c="${n:$i:1}"
+    idx=$(expr index "$base" "$c")
+    d=$((d*l + idx - 1))
+  done
+  echo $d
+}
+
+from_dec() {
+  n=$1
+  base="$2"
+  r=""
+  l=${#base}
+  if [ "$n" -eq 0 ]
+  then
+    echo "${base:0:1}"
+    return
+  fi
+  while [ "$n" -gt 0 ]
+  do
+    rem=$(( n % l ))
+    r="${base:rem:1}$r"
+    n=$(( n / l ))
+  done
+  echo "$r"
+}
+
+from_dec $(( $(to_dec "$WATER" "water") + $(to_dec "$STIR" "stir") )) "bestchol"
